@@ -6,7 +6,6 @@ import com.example.blogapp.payloads.UserDto;
 import com.example.blogapp.repositories.UserRepo;
 import com.example.blogapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 
 import java.util.List;
 
@@ -18,23 +17,50 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-            User user = this.dtoToUser(userDto);
-            User savedUser = userRepo.save(user);
-            return this.userToDto(savedUser);
+        User user = this.dtoToUser(userDto);
+        User savedUser = userRepo.save(user);
+        return this.userToDto(savedUser);
     }
 
+//    @Override
+//    public UserDto updateUser(UserDto user) {
+//        return null;
+//    }
+
     @Override
-    public UserDto updateUser(UserDto user) {
-        return null;
+    public UserDto updateUser(UserDto userDto, Long userId) {
+
+        User user = this.userRepo.findById(userId)
+                .orElseThrow(()
+                        ->
+                        new ResourceNotFoundException("User", "id", userId));
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setAbout(userDto.getAbout());
+
+        User updatedUser = this.userRepo.save(user);
+        UserDto userDto1 = this.userToDto(updatedUser);
+        return userDto1;
     }
+//
+//    @Override
+//    public UserDto updateUser(UserDto userDto, Long userId) {
+//
+//        User user = this.userRepo.findById( userId)
+//                .orElseThrow( ()
+//                        ->
+//                        new ResourceNotFoundException("User","id",userId));
+//        return null;
+//    }
 
 //    @Override
 //    public UserDto updateUser(UserDto userDto,Long userId) {
 //
-////        User user = this.userRepo.findById( userId)
-////                .orElseThrow( ()
-////                        ->
-////                        new ResourceNotFoundException("User","id",userId));
+//        User user = this.userRepo.findById( userId)
+//                .orElseThrow( ()
+//                        ->
+//                        new ResourceNotFoundException("User","id",userId));
 //        return null;
 //    }
 
@@ -53,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private User dtoToUser(UserDto userDto){
+    private User dtoToUser(UserDto userDto) {
         User user = new User();
         user.setId(user.getId());
         user.setName(userDto.getName());
@@ -63,7 +89,7 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    private UserDto userToDto(User user){
+    private UserDto userToDto(User user) {
 
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
