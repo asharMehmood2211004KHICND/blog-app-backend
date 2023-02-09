@@ -12,7 +12,7 @@ public interface UserService {
 
     UserDto updateUser(UserDto user, Long userId);
 
-    UserDto getUserById(UserDto user);
-    List<UserDto> getAllUsers(UserDto user);
-    void deleteUser(Integer userId);
+    UserDto getUserById(Long userId);
+    List<UserDto> getAllUsers();
+    void deleteUser(Long userId);
 }

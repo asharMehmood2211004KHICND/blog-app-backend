@@ -6,9 +6,12 @@ import com.example.blogapp.payloads.UserDto;
 import com.example.blogapp.repositories.UserRepo;
 import com.example.blogapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -17,8 +20,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
+        System.out.println("the id of user dto is"+userDto.getId());
         User user = this.dtoToUser(userDto);
-        User savedUser = userRepo.save(user);
+        System.out.println("id of user "+user.getId());
+        User savedUser = this.userRepo.save(user);
+        System.out.println("final id after daving to db "+savedUser.getId());
         return this.userToDto(savedUser);
     }
 
@@ -29,7 +35,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto updateUser(UserDto userDto, Long userId) {
-
         User user = this.userRepo.findById(userId)
                 .orElseThrow(()
                         ->
@@ -43,45 +48,32 @@ public class UserServiceImpl implements UserService {
         UserDto userDto1 = this.userToDto(updatedUser);
         return userDto1;
     }
-//
-//    @Override
-//    public UserDto updateUser(UserDto userDto, Long userId) {
-//
-//        User user = this.userRepo.findById( userId)
-//                .orElseThrow( ()
-//                        ->
-//                        new ResourceNotFoundException("User","id",userId));
-//        return null;
-//    }
-
-//    @Override
-//    public UserDto updateUser(UserDto userDto,Long userId) {
-//
-//        User user = this.userRepo.findById( userId)
-//                .orElseThrow( ()
-//                        ->
-//                        new ResourceNotFoundException("User","id",userId));
-//        return null;
-//    }
 
     @Override
-    public UserDto getUserById(UserDto user) {
-        return null;
+    public UserDto getUserById(Long userId) {
+        User user = userRepo.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("User", "Id", userId));
+
+        return this.userToDto(user);
     }
 
     @Override
-    public List<UserDto> getAllUsers(UserDto user) {
-        return null;
+    public List<UserDto> getAllUsers() {
+        List<User> users = this.userRepo.findAll();
+        List<UserDto> userDtos = users.stream().map(user -> this.userToDto(user)).collect(Collectors.toList());
+        return userDtos;
     }
 
     @Override
-    public void deleteUser(Integer userId) {
-
+    public void deleteUser(Long userId) {
+        User user = this.userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
+        this.userRepo.delete(user);
     }
+
 
     private User dtoToUser(UserDto userDto) {
         User user = new User();
-        user.setId(user.getId());
+        user.setId(userDto.getId());
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
         user.setAbout(userDto.getAbout());
