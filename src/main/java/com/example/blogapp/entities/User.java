@@ -14,12 +14,6 @@ import lombok.Setter;
 @Setter
 public class User {
 
-////////okkok
-    ////////okkok
-////////okkok
-
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 
