@@ -3,27 +3,29 @@ package com.example.blogapp.controllers;
 import com.example.blogapp.payloads.ApiResponse;
 import com.example.blogapp.payloads.CategoryDto;
 import com.example.blogapp.services.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController()
-@RequestMapping("category")
+@Controller
+@RequestMapping("/api/category")
 public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
     @PostMapping("/")
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto){
+    public ResponseEntity<CategoryDto> createCategory( @Valid @RequestBody CategoryDto categoryDto){
         CategoryDto createCategory = this.categoryService.createCategory(categoryDto);
         return new ResponseEntity<CategoryDto>(createCategory, HttpStatus.CREATED);
     }
 
     @PutMapping("/{catId}")
-    public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto ,
+    public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto ,
                                                       @PathVariable Long catId ){
         CategoryDto updatdeCategory = this.categoryService.updateCategory(categoryDto,catId);
         return new ResponseEntity<CategoryDto>(updatdeCategory,HttpStatus.OK);
