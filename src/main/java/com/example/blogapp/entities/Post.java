@@ -14,7 +14,7 @@ public class Post {
 
     @Column(length = 30,nullable = false)
     private String title;
-
+////////testing
     @Column(length = 1000,nullable = false)
     private String content;
     private String imageLink;
